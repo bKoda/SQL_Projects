@@ -90,15 +90,15 @@ SELECT
 
 ```
 SELECT
-       sales.customer_id
-     , members.join_date
-     , sales.order_date
-     , menu.product_name
+       order_rank_table.customer_id
+     , order_rank_table.join_date
+     , order_rank_table.order_date
+     , order_rank_table.product_name
   FROM
       (
 	SELECT
 	       sales.customer_id
-     	     , members.join_date
+     	     , TO_CHAR(members.join_date :: DATE, 'yyyy-mm-dd') AS join_date
      	     , sales.order_date
      	     , menu.product_name
      	     , RANK() OVER(PARTITION BY members.customer_id ORDER BY sales.order_date) AS order_rank
@@ -116,15 +116,15 @@ SELECT
 
 ```
 SELECT
-       sales.customer_id
-     , members.join_date
-     , sales.order_date
-     , menu.product_name
+       order_rank_table.customer_id
+     , order_rank_table.join_date
+     , order_rank_table.order_date
+     , order_rank_table.product_name
   FROM
       (
 	SELECT
 	       sales.customer_id
-     	     , members.join_date
+     	     , TO_CHAR(members.join_date :: DATE, 'yyyy-mm-dd') AS join_date
      	     , sales.order_date
      	     , menu.product_name
      	     , RANK() OVER(PARTITION BY members.customer_id ORDER BY sales.order_date DESC) AS order_rank
@@ -138,3 +138,19 @@ SELECT
  WHERE
        order_rank = 1
    ```
+### 8. What is the total items and amount spent for each member before they became a member?
+```
+  SELECT
+         sales.customer_id
+       , TO_CHAR(members.join_date :: DATE, 'yyyy-mm-dd') AS join_date
+       , COUNT(sales.product_id) AS total_items
+       , SUM(menu.price) AS total_price
+    FROM
+  	 dannys_diner.sales
+    JOIN dannys_diner.members ON dannys_diner.members.customer_id = dannys_diner.sales.customer_id
+    JOIN dannys_diner.menu ON dannys_diner.menu.product_id = dannys_diner.sales.product_id
+   WHERE
+ 	 members.join_date > sales.order_date
+GROUP BY 
+ 	 sales.customer_id
+       , members.join_date
