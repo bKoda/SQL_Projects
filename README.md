@@ -5,12 +5,12 @@
 ### 1. What is the total amount each customer spent at the restaurant?
 
   SELECT
-        customer_id
-      , SUM(price) AS 'total_amt'
+        sales.customer_id
+      , SUM(sales.price) AS 'total_amt'
     FROM
-        sales
+        dannys_diner.sales
     JOIN
-        menu ON sales.product_id = menu.product_id
+        dannys_diner.menu ON sales.product_id = menu.product_id
 GROUP BY
         customer_id
 ORDER BY
@@ -22,8 +22,42 @@ ORDER BY
          customer_id
        , count(order_date) AS 'total_visits'
     FROM
-         sales
+         dannys_diner.sales
 GROUP BY
          customer_id
 ORDER BY 
-		     COUNT(order_date) DESC
+	 COUNT(order_date) DESC
+
+### 3. What was the first item from the menu purchased by each customer?
+
+   SELECT 
+	  sales.customer_id
+	, menu.product_name
+     FROM
+	  dannys_diner.sales
+     JOIN
+ 	  (
+ 	   SELECT
+  	 	  sales.customer_id
+      	   	, MIN(sales.order_date) AS min_sale_date
+    	     FROM
+   		  dannys_diner.sales
+	 GROUP BY
+  	  	  sales.customer_id
+  	   ) AS min_date ON min_date.customer_id = dannys_diner.customer_id
+      JOIN
+   	   dannys_diner.menu ON sales.product_id = menu.product_id
+	   
+### 4. What is the most purchased item on the menu and how many times was it purchased by all customers?	   
+	   
+	      SELECT
+	     menu.product_name
+       , count(sales.product_id) AS product_count
+     FROM
+  	     dannys_diner.sales
+     JOIN
+     	 dannys_diner.menu ON sales.product_id = menu.product_id
+ GROUP BY
+ 		 menu.product_name
+ ORDER BY
+ 		 count(sales.product_id) DESC
