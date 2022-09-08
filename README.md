@@ -3,7 +3,7 @@
 # Case studies taken from https://8weeksqlchallenge.com/
 ## Week 1
 ### 1. What is the total amount each customer spent at the restaurant?
-
+```
 SELECT
         sales.customer_id
       , SUM(sales.price) AS 'total_amt'
@@ -15,7 +15,7 @@ GROUP BY
         customer_id
 ORDER BY
         SUM(price) DESC
-        
+```        
 ### 2. How many days has each customer visited the restaurant?
 
   SELECT DISTINCT
