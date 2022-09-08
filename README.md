@@ -2,7 +2,7 @@
 
 # Case studies taken from https://8weeksqlchallenge.com/
 ## Week 1
- 1. What is the total amount each customer spent at the restaurant?
+### 1. What is the total amount each customer spent at the restaurant?
 ```
   SELECT
         sales.customer_id
