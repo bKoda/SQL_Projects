@@ -165,7 +165,7 @@ GROUP BY
            	 WHEN menu.product_id != 1 THEN (10 * menu.price)
            	 ELSE 0
            	 END
-             ) AS total_points_earned
+             ) AS total_points
     FROM
   	 dannys_diner.sales
     JOIN dannys_diner.menu ON dannys_diner.sales.product_id = dannys_diner.menu.product_id
@@ -177,4 +177,34 @@ ORDER BY
            	 WHEN menu.product_id != 1 THEN (10 * menu.price)
            	 ELSE 0
            	 END) DESC
+```
+### 10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?
+
+```
+WITH join_dates AS
+(
+SELECT
+      customer_id
+    , join_date AS join_date_start
+    , join_date + INTERVAL '7 day' AS join_date_end
+  FROM
+      dannys_diner.members
+)
+  SELECT
+        sales.customer_id
+      , SUM(CASE 
+                WHEN (sales.order_date < join_dates.join_date_end AND sales.order_date > join_dates.join_date_start) AND menu.product_id IS NOT NULL THEN (20 * menu.price)
+	        WHEN menu.product_id = 1 THEN (20 * menu.price)
+                WHEN menu.product_id != 1 THEN (10 * menu.price)
+                ELSE 0
+                END) AS total_points
+    FROM 
+         dannys_diner.sales
+    JOIN join_dates ON sales.customer_id = join_dates.customer_id
+    JOIN dannys_diner.menu ON sales.product_id = menu.product_id
+   WHERE
+         sales.order_date BETWEEN '2021-01-01' AND '2021-01-31'
+GROUP BY
+	 sales.customer_id
+
 ```
