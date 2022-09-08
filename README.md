@@ -50,14 +50,14 @@ ORDER BY
 	   
 ### 4. What is the most purchased item on the menu and how many times was it purchased by all customers?	   
 	   
-	      SELECT
-	     menu.product_name
-       , count(sales.product_id) AS product_count
-     FROM
-  	     dannys_diner.sales
-     JOIN
+  SELECT
+	 menu.product_name
+       , COUNT(sales.product_id) AS product_count
+    FROM
+  	 dannys_diner.sales
+    JOIN
      	 dannys_diner.menu ON sales.product_id = menu.product_id
- GROUP BY
- 		 menu.product_name
- ORDER BY
- 		 count(sales.product_id) DESC
+GROUP BY
+ 	 menu.product_name
+ORDER BY
+ 	 COUNT(sales.product_id) DESC
