@@ -65,24 +65,24 @@ ORDER BY
 ### 5. Which item was the most popular for each customer?
 ```
 SELECT
-	  product_rank.customer_id
+      product_rank.customer_id
     , product_rank.product_name
     , product_rank.product_count
   FROM
- 	  (
-   	  SELECT
-	        menu.product_name
-          , sales.customer_id
-          , COUNT(sales.product_id) AS product_count
-          , RANK() OVER(PARTITION BY sales.customer_id ORDER BY COUNT(sales.product_id) DESC) AS product_order_rank
-        FROM
-  	     	dannys_diner.sales
-     	JOIN
-     	 	dannys_diner.menu ON sales.product_id = menu.product_id
- 	GROUP BY
- 		 	menu.product_name
-       	  , customer_id	 
-	  ) AS product_rank
+      (
+       SELECT
+	     menu.product_name
+           , sales.customer_id
+           , COUNT(sales.product_id) AS product_count
+           , RANK() OVER(PARTITION BY sales.customer_id ORDER BY COUNT(sales.product_id) DESC) AS product_order_rank
+         FROM
+  	     dannys_diner.sales
+     	 JOIN
+     	     dannys_diner.menu ON sales.product_id = menu.product_id
+     GROUP BY
+ 	     menu.product_name
+       	   , customer_id	 
+      ) AS product_rank
  WHERE
- 	  product_order_rank = 1
+      product_order_rank = 1
 ```
