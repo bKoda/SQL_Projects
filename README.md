@@ -112,3 +112,29 @@ SELECT
  WHERE
        order_rank = 1
    ```
+### 7. Which item was purchased just before the customer became a member?
+
+```
+SELECT
+       sales.customer_id
+     , members.join_date
+     , sales.order_date
+     , menu.product_name
+  FROM
+      (
+	SELECT
+	       sales.customer_id
+     	     , members.join_date
+     	     , sales.order_date
+     	     , menu.product_name
+     	     , RANK() OVER(PARTITION BY members.customer_id ORDER BY sales.order_date DESC) AS order_rank
+ 	  FROM
+  	       dannys_diner.sales
+  	  JOIN dannys_diner.members ON dannys_diner.members.customer_id = dannys_diner.sales.customer_id
+  	  JOIN dannys_diner.menu ON dannys_diner.menu.product_id = dannys_diner.sales.product_id
+ 	 WHERE
+ 	       members.join_date > sales.order_date
+       ) order_rank_table
+ WHERE
+       order_rank = 1
+   ```
