@@ -19,14 +19,14 @@ ORDER BY
 ### 2. How many days has each customer visited the restaurant?
 ```
   SELECT DISTINCT
-         customer_id
-       , count(order_date) AS 'total_visits'
+         sales.customer_id
+       , COUNT(sales.order_date) AS 'total_visits'
     FROM
          dannys_diner.sales
 GROUP BY
-         customer_id
+         sales.customer_id
 ORDER BY 
-	 COUNT(order_date) DESC
+	 COUNT(sales.order_date) DESC
 ```
 ### 3. What was the first item from the menu purchased by each customer?
 ```
