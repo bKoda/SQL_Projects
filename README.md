@@ -210,6 +210,6 @@ SELECT
    WHERE
          sales.order_date BETWEEN '2021-01-01' AND '2021-01-31'
 GROUP BY
-	 sales.customer_id
+	 sales.customer_id 
 
 ```
