@@ -215,7 +215,7 @@ GROUP BY
 ```
 ## Week 2
 
-Week 1 is based on the delivery service of a pizza place.
+Week 2 is based on the delivery service of a pizza place.
 
 ### 1. How many pizzas were ordered?
 
