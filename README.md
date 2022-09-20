@@ -20,6 +20,9 @@ GROUP BY
 ORDER BY
         SUM(price) DESC
 ```        
+
+![image](https://user-images.githubusercontent.com/75760072/191342410-348d08f0-e7b6-4a85-8d3f-282ab927b9ae.png)
+
 ### 2. How many days has each customer visited the restaurant?
 ```
   SELECT
