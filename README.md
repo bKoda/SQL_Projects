@@ -10,7 +10,7 @@ Week 1 is based on a new ramen shop looking to analyze current customers along w
 ```
   SELECT
         sales.customer_id
-      , SUM(sales.price) AS 'total_amt'
+      , SUM(sales.price) AS total_amt
     FROM
         dannys_diner.sales
     JOIN
@@ -24,7 +24,7 @@ ORDER BY
 ```
   SELECT
          sales.customer_id
-       , COUNT(DISTINCT(sales.order_date)) AS 'total_visits'
+       , COUNT(DISTINCT(sales.order_date)) AS total_visits
     FROM
          dannys_diner.sales
 GROUP BY
@@ -43,7 +43,7 @@ ORDER BY
  	  (
  	   SELECT
   	 	  sales.customer_id
-      	   	, MIN(sales.order_date) AS 'min_sale_date'
+      	   	, MIN(sales.order_date) AS min_sale_date
     	     FROM
    		  dannys_diner.sales
 	 GROUP BY
@@ -56,7 +56,7 @@ ORDER BY
 ```
   SELECT
 	 menu.product_name
-       , COUNT(sales.product_id) AS 'product_count'
+       , COUNT(sales.product_id) AS product_count
     FROM
   	 dannys_diner.sales
     JOIN
@@ -77,7 +77,7 @@ SELECT
        SELECT
 	     menu.product_name
            , sales.customer_id
-           , COUNT(sales.product_id) AS 'product_count'
+           , COUNT(sales.product_id) AS product_count
            , RANK() OVER(PARTITION BY sales.customer_id ORDER BY COUNT(sales.product_id) DESC) AS product_order_rank
          FROM
   	     dannys_diner.sales
@@ -102,10 +102,10 @@ SELECT
       (
 	SELECT
 	       sales.customer_id
-     	     , TO_CHAR(members.join_date :: DATE, 'yyyy-mm-dd') AS 'join_date'
+     	     , TO_CHAR(members.join_date :: DATE, 'yyyy-mm-dd') AS join_date
      	     , sales.order_date
      	     , menu.product_name
-     	     , RANK() OVER(PARTITION BY members.customer_id ORDER BY sales.order_date) AS 'order_rank'
+     	     , RANK() OVER(PARTITION BY members.customer_id ORDER BY sales.order_date) AS order_rank
  	  FROM
   	       dannys_diner.sales
   	  JOIN dannys_diner.members ON dannys_diner.members.customer_id = dannys_diner.sales.customer_id
@@ -128,7 +128,7 @@ SELECT
       (
 	SELECT
 	       sales.customer_id
-     	     , TO_CHAR(members.join_date :: DATE, 'yyyy-mm-dd') AS 'join_date'
+     	     , TO_CHAR(members.join_date :: DATE, 'yyyy-mm-dd') AS join_date
      	     , sales.order_date
      	     , menu.product_name
      	     , RANK() OVER(PARTITION BY members.customer_id ORDER BY sales.order_date DESC) AS 'order_rank'
@@ -146,7 +146,7 @@ SELECT
 ```
   SELECT
          sales.customer_id
-       , TO_CHAR(members.join_date :: DATE, 'yyyy-mm-dd') AS 'join_date'
+       , TO_CHAR(members.join_date :: DATE, 'yyyy-mm-dd') AS join_date
        , COUNT(sales.product_id) AS total_items
        , SUM(menu.price) AS total_price
     FROM
@@ -191,7 +191,7 @@ WITH join_dates AS
 SELECT
       customer_id
     , join_date AS join_date_start
-    , join_date + INTERVAL '7 day' AS 'join_date_end'
+    , join_date + INTERVAL '7 day' AS join_date_end
   FROM
       dannys_diner.members
 )
@@ -221,7 +221,7 @@ Week 2 is based on the delivery service of a pizza place.
 
 ```
 SELECT 
-      COUNT(order_id) AS 'total_pizza_orders'
+      COUNT(order_id) AS total_pizza_orders
   FROM
       pizza_runner.customer_orders
 ```
@@ -230,22 +230,53 @@ SELECT
 
 ```
 SELECT 
-      COUNT(DISTINCT(customer_id)) AS 'total_customers'
+      COUNT(DISTINCT(customer_id)) AS total_customers
   FROM
       pizza_runner.customer_orders
 ```
 3. How many successful orders were delivered by each runner?
 ```
   SELECT 
-        runner_id
-      , COUNT(order_id) AS 'total_orders'
+         runner_id
+       , COUNT(order_id) AS total_orders
     FROM
-        pizza_runner.runner_orders
+         pizza_runner.runner_orders
 GROUP BY
-		runner_id
+	 runner_id
 ```
 4. How many of each type of pizza was delivered?
+
+```
+  SELECT 
+         pizza_name
+       , COUNT(*) AS total_delivered_pizzas
+    FROM
+         pizza_runner.customer_orders
+    JOIN pizza_runner.runner_orders ON customer_orders.order_id = runner_orders.order_id --Inner join on orders that were ordered + delivered
+     AND cancellation IN ('','null') --Only pull orders that were not canceled
+    JOIN pizza_runner.pizza_names ON pizza_names.pizza_id = customer_orders.pizza_id 
+GROUP BY
+	 pizza_name
+```
+
 5. How many Vegetarian and Meatlovers were ordered by each customer?
+
+```
+  SELECT 
+         customer_id
+       , pizza_name
+       , COUNT(*) AS total_delivered_pizzas
+    FROM
+         pizza_runner.customer_orders
+    JOIN pizza_runner.pizza_names ON pizza_names.pizza_id = customer_orders.pizza_id 
+GROUP BY
+	 customer_id
+       , pizza_name
+ORDER BY
+	 customer_id
+       , COUNT(*) DESC
+```
+
 6. What was the maximum number of pizzas delivered in a single order?
 7. For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
 8. How many pizzas were delivered that had both exclusions and extras?
