@@ -1,7 +1,7 @@
 # Bradley's Portfolio
 
 # Case studies taken from https://8weeksqlchallenge.com/
-The purpose of these exercises are to solve real world issues using data.
+The purpose of these exercises are to solve real world issues using data. Visuals made in Google Data Studio.
 ## Week 1
 
 Week 1 is based on a new ramen shop looking to analyze current customers along with the performance of a rewards program.
