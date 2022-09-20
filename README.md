@@ -278,7 +278,93 @@ ORDER BY
 ```
 
 6. What was the maximum number of pizzas delivered in a single order?
+
+```
+  SELECT 
+         order_id
+       , COUNT(*) AS total_delivered_pizzas
+    FROM
+         pizza_runner.customer_orders
+GROUP BY
+         order_id
+ORDER BY
+	 COUNT(*) DESC
+   LIMIT 1
+```
+
 7. For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
+
+```
+  SELECT
+	 customer_id
+       , SUM(changes) AS total_order_changes
+    FROM
+	 (    
+  	  SELECT 
+           	 customer_orders.customer_id
+               , customer_orders.order_id
+               , MAX(CASE 
+                	  WHEN exclusions ~ '[0-9]' OR extras ~ '[0-9]' THEN '1'
+                	  ELSE 0
+                	  END) Changes
+    	    FROM
+    	 	  pizza_runner.customer_orders
+    	    JOIN
+         	 pizza_runner.runner_orders ON customer_orders.order_id = runner_orders.order_id
+   	     AND cancellation IN ('','null') --Only pull orders that were not canceled
+	GROUP BY
+           	 customer_orders.customer_id
+               , customer_orders.order_id
+        ) change_table
+GROUP BY
+ 	  customer_id
+```
 8. How many pizzas were delivered that had both exclusions and extras?
+
+```
+SELECT 
+       customer_orders.customer_id
+     , customer_orders.order_id
+     , CASE 
+      	    WHEN exclusions ~ '[0-9]' AND extras ~ '[0-9]' THEN '1'
+      	    ELSE 0
+      	    END Changes
+  FROM
+       pizza_runner.customer_orders
+  JOIN
+       pizza_runner.runner_orders ON customer_orders.order_id = runner_orders.order_id
+   AND cancellation IN ('','null') --Only pull orders that were not canceled
+ WHERE
+      (CASE 
+            WHEN exclusions ~ '[0-9]' AND extras ~ '[0-9]' THEN '1'
+            ELSE 0
+            END) > 0
+```
+
 9. What was the total volume of pizzas ordered for each hour of the day?
+
+```
+  SELECT
+	 COUNT(order_id) AS total_orders
+       , EXTRACT(HOUR FROM order_time) AS order_hour
+    FROM
+  	 pizza_runner.customer_orders
+GROUP BY
+	 EXTRACT(HOUR FROM order_time)
+ORDER BY 
+  	 EXTRACT(HOUR FROM order_time)
+```
+
 10. What was the volume of orders for each day of the week?
+
+```
+  SELECT
+	 COUNT(*) AS total_orders 
+       , TO_CHAR(order_time, 'DY') AS day
+    FROM
+  	 pizza_runner.customer_orders
+GROUP BY
+	 TO_CHAR(order_time, 'DY')
+ORDER BY
+	 COUNT(*) DESC
+```
