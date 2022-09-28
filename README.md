@@ -8,7 +8,6 @@ Week 1 is based on a new ramen shop looking to analyze current customers along w
 
 ### 1. What is the total amount each customer spent at the restaurant?
 ```
-
   SELECT
         sales.customer_id
       , SUM(sales.price) AS total_amt
