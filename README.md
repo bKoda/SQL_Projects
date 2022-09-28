@@ -218,6 +218,8 @@ GROUP BY
 
 Week 2 is based on the delivery service of a pizza place.
 
+## A. Pizza Metrics
+
 ### 1. How many pizzas were ordered?
 
 ```
@@ -369,3 +371,4 @@ GROUP BY
 ORDER BY
 	 COUNT(*) DESC
 ```
+
